@@ -1,25 +1,28 @@
-import appsignal from "../../appsignal.js"
-
+import appsignal from "../../../appsignal.js"
 
 export default function handler(req, res) {
   const span = appsignal.createSpan((span) => {
-    span.setAction("number")
+    span.setAction("name")
     span.setNamespace("functions")
-    span.setParams(process.env)
+    span.setParams(req)
     return span
   })
+
+  const {
+    query: { name },
+  } = req;
 
   try {
     const number = getRandomInt(10)
     if (number % 2 == 0) {
-      res.status(200).json({ number: number })
+      res.status(200).json({ name: name })
     } else {
-      throw new NumberException(`Number ${number} is not even.`)
+      throw new NameException(`Name is invalid.`)
     }
-  } catch(e) {
+  } catch (e) {
     span.setError(e)
     appsignal.send(span)
-    throw(e)
+    throw (e)
   }
 }
 
@@ -27,9 +30,9 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-class NumberException extends Error {
+class NameException extends Error {
   constructor(message) {
     super(message)
-    this.name = 'NumberException';
+    this.name = 'NameException';
   }
 }

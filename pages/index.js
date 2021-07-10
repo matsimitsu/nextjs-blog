@@ -1,6 +1,16 @@
 import Head from 'next/head'
 import useSWR from 'swr'
+
 const fetcher = (...args) => fetch(...args).then(res => res.json())
+
+export function reportWebVitals(metric) {
+  const body = JSON.stringify(metric);
+  const url = "/__appsignal-web-vitals";
+
+  // Use `navigator.sendBeacon()` if available, falling back to `fetch()`.
+  (navigator.sendBeacon && navigator.sendBeacon(url, body)) ||
+    fetch(url, { body, method: "POST", keepalive: true });
+}
 
 export default function Home() {
   const { data, error } = useSWR('/api/number', fetcher)

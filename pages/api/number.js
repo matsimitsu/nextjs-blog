@@ -1,6 +1,5 @@
 import { monitorWithAppSignal } from "../../appsignal.js"
 
-
 function handler(req, res) {
   const number = getRandomInt(10)
   if (number % 2 == 0) {

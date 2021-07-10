@@ -1,6 +1,14 @@
 import Head from 'next/head'
+import useSWR from 'swr'
+const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 export default function Home() {
+  const { data, error } = useSWR('/api/number', fetcher)
+  let content
+  if (error) { content = <p className="description">failed to load</p> }
+  else if (!data) { content = <p className="description">loading...</p> }
+  else { content = <p className="description">Random even number is <strong>{data.number}</strong>!</p> }
+
   return (
     <div className="container">
       <Head>
@@ -13,9 +21,7 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
+        {content}
 
         <div className="grid">
           <a href="https://nextjs.org/docs" className="card">

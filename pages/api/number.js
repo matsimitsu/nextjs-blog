@@ -10,7 +10,7 @@ export default function handler(req, res) {
     }
   } catch(e) {
     appsignal.sendError(e)
-    res.status(500).json()
+    throw(e)
   }
 }
 

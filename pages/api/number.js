@@ -1,6 +1,14 @@
 import appsignal from "../../appsignal.js"
 
+
 export default function handler(req, res) {
+  const span = appsignal.createSpan((span) => {
+    span.setAction("number")
+    span.setNamespace("functions")
+    span.setParams(req)
+    return span
+  })
+
   try {
     const number = getRandomInt(10)
     if (number % 2 == 0) {
@@ -9,7 +17,8 @@ export default function handler(req, res) {
       throw new NumberException(`Number ${number} is not even.`)
     }
   } catch(e) {
-    appsignal.sendError(e)
+    span.setError(e)
+    appsignal.send(span)
     throw(e)
   }
 }

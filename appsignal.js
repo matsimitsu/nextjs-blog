@@ -17,7 +17,6 @@ export function monitorWithAppSignal(func, req, res) {
     func(req, res, span)
   } catch(error) {
     span.setError(error)
-    appsignal.send(span)
     console.error(JSON.stringify(span.serialize()))
     throw (error)
   }
